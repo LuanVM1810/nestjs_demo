@@ -8,34 +8,39 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserResponseDto } from './dto/user-response.dto'; // DTO Response
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  async findAll(): Promise<UserResponseDto[]> {
+    return this.userService.findAll(); // Returns DTO
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.userService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<UserResponseDto> {
+    return this.userService.findOne(id); // Returns DTO
   }
 
   @Post()
-  create(@Body() userBody: User) {
-    return this.userService.create(userBody);
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    return this.userService.create(createUserDto); // Pass DTO to service
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() userBody: Partial<User>) {
-    return this.userService.update(id, userBody);
+  async update(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
+    return this.userService.update(id, updateUserDto); // Pass DTO to service
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  async delete(@Param('id') id: number): Promise<string> {
     return this.userService.delete(id);
   }
 }
